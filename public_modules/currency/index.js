@@ -9,21 +9,21 @@
 
 
 class Currency {
-	constructor(canadianDollar) {
-		this.canadianDollar = canadianDollar
-	}
+  constructor(canadianDollar) {
+    this.canadianDollar = canadianDollar
+  }
 
-	roundTwoDecimals(amount) {
-		return Math.round(amount * 100) / 100
-	}
+  roundTwoDecimals(amount) {
+    return Math.round(amount * 100) / 100
+  }
 
-	canadianToUS(canadian) {
-		return this.roundTwoDecimals(canadian * this.canadianDollar)
-	}
+  canadianToUS(canadian) {
+    return this.roundTwoDecimals(canadian * this.canadianDollar)
+  }
 
-	USToCanadian(us) {
-		return this.roundTwoDecimals(us * this.canadianDollar)
-	}
+  USToCanadian(us) {
+    return this.roundTwoDecimals(us * this.canadianDollar)
+  }
 }
 
 // exports = new Currency(0.91)
@@ -46,4 +46,3 @@ module.exports = new Currency(0.91)
 // 如果你想保留那个链接，可以像下面这样让 module.exports 再次引用 exports:
 //      module.exports = exports = Currency;
 // 根据需要使用 exports 或 module.exports 可以将功能组织成模块，规避掉程序脚本 一直增长所产生的弊端。
-   

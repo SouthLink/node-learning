@@ -75,31 +75,31 @@ const fs = require('fs')
 // 优化嵌套层级和结构
 
 function onRequset(req, res) {
-	if (req.url == '/') {
-		fs.readFile('./lib/titles.json', (err, data) => {
-			if (err) return hasError(err, res)
-			getTemplate(JSON.parse(data.toString()), res)
-		})
-	}
+  if (req.url == '/') {
+    fs.readFile('./lib/titles.json', (err, data) => {
+      if (err) return hasError(err, res)
+      getTemplate(JSON.parse(data.toString()), res)
+    })
+  }
 }
 
 function getTemplate(titles, res) {
-	fs.readFile('./lib/recent.html', (err, data) => {
-		if (err) return hasError(err, res)
-		formateHtml(data.toString(), titles, res)
-	})
+  fs.readFile('./lib/recent.html', (err, data) => {
+    if (err) return hasError(err, res)
+    formateHtml(data.toString(), titles, res)
+  })
 }
 
 function formateHtml(tmpl, titles, res) {
-	const html = tmpl.replace('%', titles.join('<li></li>'))
-	res.writeHead(200, {'Content-Type': 'text/html'})
-	res.end(html)
+  const html = tmpl.replace('%', titles.join('<li></li>'))
+  res.writeHead(200, { 'Content-Type': 'text/html' })
+  res.end(html)
 }
 
 
 function hasError(err, res) {
-	console.error(err)
-	res.end('Server Error')
+  console.error(err)
+  res.end('Server Error')
 }
 
 http.createServer(onRequset).listen(8072)

@@ -1,124 +1,123 @@
-
 const events = require('events')
 const net = require('net')
 // const channel = new events.EventEmitter()
 
 // class 模式
 
-class Chat{
-	constructor(port) {
-		this.signalTower = {}
-		this.channel = new events.EventEmitter()
-		this.channel.clients = {}
-		this.channel.subscriptions = {}
-		this.channel.on('join', this.channelJoin.bind(this))
-		this.channel.on('leave', this.channelLeave.bind(this))
-		this.channel.on('shutdown', this.channelShutdown.bind(this))
-		this.channel.on('error', this.channelError.bind(this))
-		this.maxListeners = 100
-		this.server = {}
-		this.port = port
-		this.init()
-	}
+class Chat {
+  constructor(port) {
+    this.signalTower = {}
+    this.channel = new events.EventEmitter()
+    this.channel.clients = {}
+    this.channel.subscriptions = {}
+    this.channel.on('join', this.channelJoin.bind(this))
+    this.channel.on('leave', this.channelLeave.bind(this))
+    this.channel.on('shutdown', this.channelShutdown.bind(this))
+    this.channel.on('error', this.channelError.bind(this))
+    this.maxListeners = 100
+    this.server = {}
+    this.port = port
+    this.init()
+  }
 
-	static getChannel() {
-		return this.channel
-	}
+  static getChannel() {
+    return this.channel
+  }
 
-	async init() {
-		const self = this
+  async init() {
+    const self = this
 
-		this.server = await net.createServer(res => {
-			self.createSocket(res)
-		})
-		this.server.listen(this.port)
-	}
+    this.server = await net.createServer(res => {
+      self.createSocket(res)
+    })
+    this.server.listen(this.port)
+  }
 
-	set maxListeners(value) {
-		this.channel.setMaxListeners(value)
-	}
+  set maxListeners(value) {
+    this.channel.setMaxListeners(value)
+  }
 
-	channelJoin(id, client) {		
-		const self = this
+  channelJoin(id, client) {
+    const self = this
 
-		this.channel.clients[id] = client
-		this.channel.subscriptions[id] = (senderId, message) => {
-			if (id != senderId) {
-				self.channel.clients[id].write(message + '\n')
-			}
-		}
-		
-		this.channel.on('broadcast', this.channel.subscriptions[id])
-		this.joinBroadcast(id)
-	}
+    this.channel.clients[id] = client
+    this.channel.subscriptions[id] = (senderId, message) => {
+      if (id != senderId) {
+        self.channel.clients[id].write(message + '\n')
+      }
+    }
 
-	joinBroadcast(id) {
-		const date = this.getCurrentTime()
-		const welcome = `
+    this.channel.on('broadcast', this.channel.subscriptions[id])
+    this.joinBroadcast(id)
+  }
+
+  joinBroadcast(id) {
+    const date = this.getCurrentTime()
+    const welcome = `
 						${date}
 						欢迎${id} 加入聊天室，
 						聊天室内现有${this.channel.listeners('broadcast').length}人`
 
-		for (let key in this.channel.clients) {
-			if (key != id) {
-				this.channel.clients[key].write(`${welcome}\n`)
-			}
-		}
-		this.channel.clients[id].write(`${date} 你加入了聊天室\n`)
-	}
+    for (let key in this.channel.clients) {
+      if (key != id) {
+        this.channel.clients[key].write(`${welcome}\n`)
+      }
+    }
+    this.channel.clients[id].write(`${date} 你加入了聊天室\n`)
+  }
 
-	channelLeave(id) {
-		// 离开时要清除房间id，不然会冲突
-		delete this.channel.clients[id]
-		this.channel.removeListener(
-			'broadcast', this.channel.subscriptions[id]
-		)
+  channelLeave(id) {
+    // 离开时要清除房间id，不然会冲突
+    delete this.channel.clients[id]
+    this.channel.removeListener(
+      'broadcast', this.channel.subscriptions[id]
+    )
 
-		this.channel.emit('broadcast', id, `${id} 离开了聊天室\n`) 
-	}
+    this.channel.emit('broadcast', id, `${id} 离开了聊天室\n`)
+  }
 
-	channelShutdown(id) {
-		this.channel.emit('broadcast', '', '有人要你们闭嘴') 
-		this.channel.removeAllListeners('broadcast')
-	}
+  channelShutdown(id) {
+    this.channel.emit('broadcast', '', '有人要你们闭嘴')
+    this.channel.removeAllListeners('broadcast')
+  }
 
-	channelError(err) {
-		console.log(`ERROR: ${err.message}`)
-	}
+  channelError(err) {
+    console.log(`ERROR: ${err.message}`)
+  }
 
-	createSocket(client) {
-		let id = `${client.remoteAddress}:${client.remotePort}` 
+  createSocket(client) {
+    let id = `${client.remoteAddress}:${client.remotePort}`
 
-		this.channel.emit('join', id, client)
-		this.eventSignalTower(client, id)
-	}
+    this.channel.emit('join', id, client)
+    this.eventSignalTower(client, id)
+  }
 
-	// publisher
-	eventSignalTower(client, id) {
-		const self = this
+  // publisher
+  eventSignalTower(client, id) {
+    const self = this
 
-		client.on('close', () => { 
-			self.channel.emit('leave', id)
-		})
-		
-		client.on('data', data => { 
-			let d = data.toString()
+    client.on('close', () => {
+      self.channel.emit('leave', id)
+    })
 
-			if (d === 'shutdown\r\n'){
-				self.channel.emit('shutdown') 
-			}
-			self.channel.emit('broadcast', id, d) 
-		})
-	}
+    client.on('data', data => {
+      let d = data.toString()
 
-	toZero(num) {
-		return num < 10 ? '0' + num : num 
-	}
+      if (d === 'shutdown\r\n') {
+        self.channel.emit('shutdown')
+      }
+      self.channel.emit('broadcast', id, d)
+    })
+  }
 
-	getCurrentTime() {
-		const date = new Date()
-		return this.toZero(date.getHours()) + ':' + this.toZero(date.getMinutes())
-	}
+  toZero(num) {
+    return num < 10 ? '0' + num : num
+  }
+
+  getCurrentTime() {
+    const date = new Date()
+    return this.toZero(date.getHours()) + ':' + this.toZero(date.getMinutes())
+  }
 }
 
 const socket = new Chat(8070)
@@ -225,4 +224,3 @@ const socket = new Chat(8070)
 //     return '';
 //   return stringSlice(this, encoding, start, end);
 // }
-
