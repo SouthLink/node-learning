@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+
+<head> 4 <title>
+    <%= title %>
+  </title>
+  <link rel='stylesheet' href='../public/css/base.css' />
+</head>
+
+<body>
+  <% include menu %>
+  <% entries.forEach((entry) => { %>
+	  <div class='entry'>
+	    <h3>
+	      <%= entry.title %>
+	    </h3>
+	    <p>
+	      <%= entry.body %>
+	    </p>
+	    <p>Posted by
+	      <%= entry.username %>
+	    </p>
+	  </div>
+	<% }) %> 
+</body>
+</html>
