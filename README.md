@@ -1,4 +1,4 @@
-# node learning project (in node action demo)
+# node learning project
 
 ### express-learning
 基于 express4.0 node-redis 的一个消息管理界面，包括一些redis的基本用法，登陆认证等
