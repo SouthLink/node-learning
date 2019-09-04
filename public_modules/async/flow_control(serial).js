@@ -6,9 +6,9 @@ const htmlparser = require('htmlparser');
 const configFilename = './public_modules/async/lib/rss_feads.txt'
 
 const checkForRSSFile = () => {
-	fs.exists(configFilename, (exists) => {                                         // fs 
+	fs.exists(configFilename, (exists) => { // fs 
 		if (!exists) return next(new Error(`Missing Rss file ${configFilename}`))
-			next(null, configFilename)
+		next(null, configFilename)
 	})
 }
 
@@ -18,9 +18,9 @@ const readRSSFile = (configFilename) => {
 		if (err) return next(err)
 		// 将预订源 URL 列表转换成字符串， 然后分隔成一个数组
 		feedList = feedList
-								.toString()
-								.replace(/^\s+|\s+$/g, '')
-								.split('\n')
+			.toString()
+			.replace(/^\s+|\s+$/g, '')
+			.split('\n')
 
 		const random = Math.floor(Math.random() * feedList.length)
 		// 从预订源 URL 数组中随 机选择一个预订源 URL
@@ -30,9 +30,11 @@ const readRSSFile = (configFilename) => {
 
 // 向选定的预订源发 送 HTTP 请求以获取数据
 const downloadRSSFild = (feedUrl) => {
-	request({url: feedUrl}, (err, res, body) => {
+	request({
+		url: feedUrl
+	}, (err, res, body) => {
 		if (err) return next(err)
-		if (res.statusCode != 200) 
+		if (res.statusCode != 200)
 			return next(new Error('Abnormal response status code'))
 		next(null, body)
 	})
@@ -45,7 +47,7 @@ const parseRSSFeed = (rss) => {
 
 	parser.parseComplete(rss);
 	console.log(handler.dom.items)
-	if (!handler.dom.items.length) 
+	if (!handler.dom.items.length)
 		return next(new Error('No Rss items found'))
 
 	const item = handler.dom.items.shift();

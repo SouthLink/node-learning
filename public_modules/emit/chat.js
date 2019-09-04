@@ -1,11 +1,10 @@
-
 const events = require('events')
 const net = require('net')
 // const channel = new events.EventEmitter()
 
 // class 模式
 
-class Chat{
+class Chat {
 	constructor(port) {
 		this.signalTower = {}
 		this.channel = new events.EventEmitter()
@@ -38,7 +37,7 @@ class Chat{
 		this.channel.setMaxListeners(value)
 	}
 
-	channelJoin(id, client) {		
+	channelJoin(id, client) {
 		const self = this
 
 		this.channel.clients[id] = client
@@ -47,7 +46,7 @@ class Chat{
 				self.channel.clients[id].write(message + '\n')
 			}
 		}
-		
+
 		this.channel.on('broadcast', this.channel.subscriptions[id])
 		this.joinBroadcast(id)
 	}
@@ -74,11 +73,11 @@ class Chat{
 			'broadcast', this.channel.subscriptions[id]
 		)
 
-		this.channel.emit('broadcast', id, `${id} 离开了聊天室\n`) 
+		this.channel.emit('broadcast', id, `${id} 离开了聊天室\n`)
 	}
 
 	channelShutdown(id) {
-		this.channel.emit('broadcast', '', '有人要你们闭嘴') 
+		this.channel.emit('broadcast', '', '有人要你们闭嘴')
 		this.channel.removeAllListeners('broadcast')
 	}
 
@@ -87,7 +86,7 @@ class Chat{
 	}
 
 	createSocket(client) {
-		let id = `${client.remoteAddress}:${client.remotePort}` 
+		let id = `${client.remoteAddress}:${client.remotePort}`
 
 		this.channel.emit('join', id, client)
 		this.eventSignalTower(client, id)
@@ -97,22 +96,22 @@ class Chat{
 	eventSignalTower(client, id) {
 		const self = this
 
-		client.on('close', () => { 
+		client.on('close', () => {
 			self.channel.emit('leave', id)
 		})
-		
-		client.on('data', data => { 
+
+		client.on('data', data => {
 			let d = data.toString()
 
-			if (d === 'shutdown\r\n'){
-				self.channel.emit('shutdown') 
+			if (d === 'shutdown\r\n') {
+				self.channel.emit('shutdown')
 			}
-			self.channel.emit('broadcast', id, d) 
+			self.channel.emit('broadcast', id, d)
 		})
 	}
 
 	toZero(num) {
-		return num < 10 ? '0' + num : num 
+		return num < 10 ? '0' + num : num
 	}
 
 	getCurrentTime() {
@@ -225,4 +224,3 @@ const socket = new Chat(8070)
 //     return '';
 //   return stringSlice(this, encoding, start, end);
 // }
-

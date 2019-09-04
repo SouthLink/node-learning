@@ -27,8 +27,8 @@ const exec = require('child_process').exec
 console.log(exec)
 
 function downloadNodeVersion(version, destination, callback) {
-	const url = `http://nodejs.org/dist/v${version}/node-v${version}.tar.gz`; 
-	const filepath = `${destination}/${version}.tgz`; 
+	const url = `http://nodejs.org/dist/v${version}/node-v${version}.tar.gz`;
+	const filepath = `${destination}/${version}.tgz`;
 
 	exec(`curl ${url} > ${filepath}`, callback)
 }

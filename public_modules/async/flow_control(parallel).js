@@ -24,14 +24,14 @@ const addWordCount = (word) => {
 // 对文本中出现的 单词计数
 const countWordsInText = (text) => {
 	const words = text
-									.toString()
-									.toLowerCase()
-									.split(/\W+/)
-									.sort()
+		.toString()
+		.toLowerCase()
+		.split(/\W+/)
+		.sort()
 
-			  words 
-			  	.filter(word => word)    // 过滤空字符串
-			  	.forEach(word => addWordCount(word))
+	words
+		.filter(word => word) // 过滤空字符串
+		.forEach(word => addWordCount(word))
 }
 
 fs.readdir(fileDir, (err, files) => {
@@ -42,7 +42,7 @@ fs.readdir(fileDir, (err, files) => {
 })
 
 // 定义处理每个文件的任务。 每个任务中都会调用一个异 步读取文件的函数并对文件 中使用的单词计数
-function parseFile(file, fileDir){
+function parseFile(file, fileDir) {
 	const task = (file => {
 		return () => {
 			fs.readFile(file, (err, text) => {
@@ -58,13 +58,3 @@ function parseFile(file, fileDir){
 	// 开始并行执行 所有任务
 	tasks.forEach(task => task())
 }
-
-
-
-
-
-
-
-
-
-

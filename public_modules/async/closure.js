@@ -9,7 +9,7 @@ let color = 'blue';
 (function (color) {
 	asyncFunction(() => {
 		console.log(`The color is ${color}`)
-	}) 
+	})
 })(color)
 
 color = 'green';

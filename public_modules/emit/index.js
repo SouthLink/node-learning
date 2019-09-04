@@ -1,4 +1,3 @@
-
 // 下面的代码清单实现了一个 echo 服务器。当有客户端连接上来时，它就会创建一个 socket。
 // socket 是一个事件发射器，可以用 on 方法添加监听器响应 data 事件。只要 socket 上有新数据 过来，就会发出这些 data 事件。
 // const net = require('net')

@@ -92,7 +92,9 @@ function getTemplate(titles, res) {
 
 function formateHtml(tmpl, titles, res) {
 	const html = tmpl.replace('%', titles.join('<li></li>'))
-	res.writeHead(200, {'Content-Type': 'text/html'})
+	res.writeHead(200, {
+		'Content-Type': 'text/html'
+	})
 	res.end(html)
 }
 
