@@ -6,7 +6,7 @@
 ### redis-learning
 redis的基本用法 node cmd 命令行工具实现
 
-### redis-learning
+### basis
 node 基础 ： 异步编程，发布/订阅, class模式等
 
 #### 运行方式
