@@ -1,0 +1,36 @@
+{
+  "name": "express-redis-router",
+  "version": "0.0.0",
+  "description": "",
+  "private": true,
+  "bin": {
+    "parse-json": "./cmd/parse-json.js"
+  },
+  "scripts": {
+    "start": "node ./bin/www",
+    "debug": "node --inspect app.js",
+    "mocha": "mocha"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "assert": "^2.0.0",
+    "basic-auth": "^2.0.1",
+    "bcrypt": "^3.0.6",
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "ejs": "~2.6.1",
+    "express": "~4.16.1",
+    "express-session": "^1.16.2",
+    "http-errors": "~1.6.3",
+    "method-override": "^3.0.0",
+    "mississippi": "^4.0.0",
+    "morgan": "~1.9.1",
+    "pretty-bytes": "^5.3.0",
+    "redis": "^2.8.0"
+  },
+  "devDependencies": {
+    "mocha": "^6.2.0"
+  }
+}
